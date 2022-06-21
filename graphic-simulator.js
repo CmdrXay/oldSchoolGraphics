@@ -1,11 +1,17 @@
 function MyDisplay(selector, maxX, maxY) {
 
     this.selector = selector;
+    this.maxX = maxX;
+    this.maxY = maxY;
 
     this.pixelWidth = 3;
+    this.ok = true;
+    this.error = !this.ok;
+    this.errorMessage = '';
+    this.errorStack = [];
 
-    $pixelArea = document.querySelector('#canvas');
-    $pixelArea.setAttribute('style', 'font-size: 3px');
+    $pixelArea = document.querySelector(selector);
+    $pixelArea.style['font-size'] = this.pixelWidth + 'px';
   
     let line = '';
     let canvas = '';
@@ -19,16 +25,32 @@ function MyDisplay(selector, maxX, maxY) {
     }
 
     $pixelArea.innerHTML = canvas;
+    $pixelArea.style['width'] = this.pixelWidth * maxX + 'px';
+    $pixelArea.style['max-width'] = this.pixelWidth * maxX + 'px';
+    $pixelArea.style['height'] = this.pixelWidth * maxY + 'px';
+    $pixelArea.style['max-height'] = this.pixelWidth * maxY + 'px';
+    $pixelArea.querySelector('.line').style['height'] = this.pixelWidth + 'px';
+    $pixelArea.querySelector('.line').style['max-height'] = this.pixelWidth * maxY + 'px';
 
     this.setPixel = function(x, y, color) {
         x = parseInt(x);
         y = parseInt(y);
         if ( x >= this.maxX || y >= this.maxY ) {
-            console.error('out of boundary - x has to be max ' + this.maxX + ' and y has to be max ' + this.maxY);
-            return;
+            this.errorMessage = 'out of boundary - x has to be max ' + this.maxX + ' and y has to be max ' + this.maxY;
+            this.errorStack.push(this.errorMessage);
+            this.ok = false;
+        } else {
+            this.ok = true;
         }
-        $pixel = $pixelArea.querySelector('#x' + x + 'y' + y);
-        $pixel.style['background-color'] = color;
+
+        if (this.ok) {
+            $pixel = $pixelArea.querySelector('#x' + x + 'y' + y);
+            $pixel.style['background-color'] = color;
+        } else {
+            this.error = true;
+        }
+
+        return this.ok;
     }
 
     this.drawCircle = function(x, y, radius, color) {
@@ -37,6 +59,14 @@ function MyDisplay(selector, maxX, maxY) {
             let yc = Math.cos(winkel / 360 * Math.PI * 2) * radius + y;
             this.setPixel(xc, yc, color);
         }
+    }
+
+    this.getError = function() {
+        return this.error;
+    }
+
+    this.getErrorStack = function() {
+        return this.errorStack;
     }
 }
 

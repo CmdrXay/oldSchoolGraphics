@@ -1,6 +1,8 @@
 # oldSchoolGraphics
 What if HTML has not SVG, Canvas, Img...
 
+https://stack-stream.com/profile/CmdrXay
+
 For my stackstream event, I pretend that we don't have graphic elements in HTML. Like in 1970/1980 computers. 
 We detect a way to do graphics anyhow! With pure html and vanilla JavaScript and how we solved these issues in the
 stone age.
